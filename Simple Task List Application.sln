@@ -1,25 +1,152 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.9.34728.123
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple Task List Application", "Simple Task List Application\Simple Task List Application.csproj", "{FB23E145-057E-4F0D-8BE2-94A946CC5E6F}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FB23E145-057E-4F0D-8BE2-94A946CC5E6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FB23E145-057E-4F0D-8BE2-94A946CC5E6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FB23E145-057E-4F0D-8BE2-94A946CC5E6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FB23E145-057E-4F0D-8BE2-94A946CC5E6F}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {652B2496-8BF4-494E-BD43-B2EFB1FEC987}
-	EndGlobalSection
-EndGlobal
+using System;
+using System.Collections.Generic;
+
+namespace TaskListApplication
+{
+    class Task
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+
+        public Task(string title, string description)
+        {
+            Title = title;
+            Description = description;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<Task> tasks = new List<Task>();
+            bool running = true;
+
+            while (running)
+            {
+                Console.WriteLine("Task List Application");
+                Console.WriteLine("1. Create a task");
+                Console.WriteLine("2. Read tasks");
+                Console.WriteLine("3. Update a task");
+                Console.WriteLine("4. Delete a task");
+                Console.WriteLine("5. Exit");
+                Console.Write("Choose an option: ");
+
+                int choice = int.Parse(Console.ReadLine());
+
+                switch (choice)
+                {
+                    case 1:
+                        CreateTask(tasks);
+                        break;
+                    case 2:
+                        ReadTasks(tasks);
+                        break;
+                    case 3:
+                        UpdateTask(tasks);
+                        break;
+                    case 4:
+                        DeleteTask(tasks);
+                        break;
+                    case 5:
+                        running = false;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice, please try again.");
+                        break;
+                }
+
+                Console.WriteLine();
+            }
+        }
+
+        static void CreateTask(List<Task> tasks)
+        {
+            Console.Write("Enter the task title: ");
+            string title = Console.ReadLine();
+            Console.Write("Enter the task description: ");
+            string description = Console.ReadLine();
+            tasks.Add(new Task(title, description));
+            Console.WriteLine("Task created successfully.");
+        }
+
+        static void ReadTasks(List<Task> tasks)
+        {
+            if (tasks.Count == 0)
+            {
+                Console.WriteLine("No tasks available.");
+                return;
+            }
+
+            Console.WriteLine("Task List:");
+            foreach (var task in tasks)
+            {
+                Console.WriteLine($"Title: {task.Title}, Description: {task.Description}");
+            }
+        }
+
+        static void UpdateTask(List<Task> tasks)
+        {
+            Console.Write("Enter the title of the task to update: ");
+            string title = Console.ReadLine();
+            Task taskToUpdate = null;
+
+            foreach (var task in tasks)
+            {
+                if (task.Title.Equals(title, StringComparison.OrdinalIgnoreCase))
+                {
+                    taskToUpdate = task;
+                    break;
+                }
+            }
+
+            if (taskToUpdate == null)
+            {
+                Console.WriteLine("Task not found.");
+                return;
+            }
+
+            Console.Write("Enter the new title (leave blank to keep the current title): ");
+            string newTitle = Console.ReadLine();
+            Console.Write("Enter the new description (leave blank to keep the current description): ");
+            string newDescription = Console.ReadLine();
+
+            if (!string.IsNullOrEmpty(newTitle))
+            {
+                taskToUpdate.Title = newTitle;
+            }
+
+            if (!string.IsNullOrEmpty(newDescription))
+            {
+                taskToUpdate.Description = newDescription;
+            }
+
+            Console.WriteLine("Task updated successfully.");
+        }
+
+        static void DeleteTask(List<Task> tasks)
+        {
+            Console.Write("Enter the title of the task to delete: ");
+            string title = Console.ReadLine();
+            Task taskToDelete = null;
+
+            foreach (var task in tasks)
+            {
+                if (task.Title.Equals(title, StringComparison.OrdinalIgnoreCase))
+                {
+                    taskToDelete = task;
+                    break;
+                }
+            }
+
+            if (taskToDelete == null)
+            {
+                Console.WriteLine("Task not found.");
+                return;
+            }
+
+            tasks.Remove(taskToDelete);
+            Console.WriteLine("Task deleted successfully.");
+        }
+    }
+}
